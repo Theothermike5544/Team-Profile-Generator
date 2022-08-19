@@ -1,22 +1,22 @@
-// loading and requiring packages
+// Application's standard / package
 const inquirer = require('inquirer');
 const fs = require('fs');
-const generatePage = require('./src/generatePage.js');
+const generateCards = require('./src/generatePage.js');
 
-// get team profiles
+// load profiles
 const Manager = require('./lib/Manager.js');
 const Engineer = require('./lib/Engineer.js');
 const Intern = require('./lib/Intern.js');
 
-// push employee info into array
+// push parent info into array
 const teamArray = [];
 
-// prompts user to add manager info
+// prompts user to add manager
 const addManager = () => {
     console.log(`
-++++++++++++++++++
+==================
 Add a Team Manager
-++++++++++++++++++
+==================
 	`);
 	return inquirer.prompt([
         {
@@ -27,7 +27,7 @@ Add a Team Manager
                 if (managerName) {
                     return true;
                 } else {
-                    console.log('Please enter a valid name!');
+                    console.log('Please enter a name!');
                 }
             }
         },
@@ -51,7 +51,7 @@ Add a Team Manager
                 if (managerEmail) {
                     return true;
                 } else {
-                    console.log('Please enter a valid e-mail address!');
+                    console.log('Please enter an e-mail address!');
                 }
             }
         },
@@ -66,36 +66,34 @@ Add a Team Manager
                     console.log('Please enter a valid number!');
                 }
             }
-        
         }
     ])
     .then(managerData => {
-            // take manager info & push them into teamArray
-            const manager = new Manager (managerData.name, managerData.id, managerData.email, managerData.officeNumber);
-            teamArray.push(manager);
-            console.log(manager);
+        // take manager info & push
+        const manager = new Manager (managerData.name, managerData.id, managerData.email, managerData.officeNumber);
+        teamArray.push(manager);
     })
 };
 
-// display questions for engineer info
+// display questions for engineer class creation
 const addEmployee = () => {
     console.log(`
-+++++++++++++++
-Add A Team Member
-+++++++++++++++
+=================
+Add a Team Member
+=================
 	`);
 	return inquirer.prompt([
         {
             type: 'list',
             name: 'role',
             message: 'Would you like to add a team member?',
-            choices: ['Engineer', 'Intern', 'Finish Building Team']
+            choices: ['Engineer', 'Intern', 'Please Finish Building Team']
         },
         {
             type: 'input',
             name: 'name',
             message: 'What is the name of the employee?',
-            when: (choice) => choice.role !== 'Finish Building Team',
+            when: (choice) => choice.role !== 'Please Finish Building Team',
             validate: employeeName => {
                 if (employeeName) {
                     return true;
@@ -108,7 +106,7 @@ Add A Team Member
             type: 'input',
             name: 'id',
             message: "Please enter the employee's ID number.",
-            when: (choice) => choice.role !== 'Finish Building Team',
+            when: (choice) => choice.role !== 'Please Finish Building Team',
             validate: employeeId => {
                 if (employeeId) {
                     return true;
@@ -121,7 +119,7 @@ Add A Team Member
             type: 'input',
             name: 'email',
             message: 'Please enter the e-mail address of the employee.',
-            when: (choice) => choice.role !== 'Finish Building Team',
+            when: (choice) => choice.role !== 'Please Finish Building Team',
             validate: employeeEmail => {
                 if (employeeEmail) {
                     return true;
@@ -160,22 +158,22 @@ Add A Team Member
             type: 'confirm',
             name: 'addEmployee',
             message: 'Would you like to add another team member?',
-            when: (choice) => choice.role !== 'Finish Building Team',
-            default: false
+            when: (choice) => choice.role !== 'Please Finish Building Team',
+            default: true
         }
     ])
     .then(employeeData => {
-        // take engineer info & push them into teamArray
+        // take engineer info & push
         if (employeeData.role === 'Engineer') {
             const engineer = new Engineer (employeeData.name, employeeData.id, employeeData.email, employeeData.github);
             teamArray.push(engineer);
         } else if (employeeData.role === 'Intern') {
-            // take intern info & push them into teamArray
+            // take intern info & push
             const intern = new Intern (employeeData.name, employeeData.id, employeeData.email, employeeData.school);
             teamArray.push(intern);
         }
 
-        // 'add another team member?' options
+        // 'add another team member?' prompt ?
         if (employeeData.addEmployee) {
             return addEmployee(teamArray);
         } else {
@@ -184,7 +182,7 @@ Add A Team Member
     })
 };
 
-// create index.html file
+// generate index
 const createFile = (fileName, teamArray) => {
     return new Promise((resolve, reject) => {
         fs.writeFile('./dist/index.html', fileName, err => {
@@ -194,22 +192,20 @@ const createFile = (fileName, teamArray) => {
             }
             resolve({
                 ok: true,
-                message: 'Success! A new team profile has been created! Check index.html in the `dist` folder.'
+                message: 'PAGE CREATED SUCCESSFULLY! PLEASE VISIT THE NEW INDEX.HTML AUTO-POPULATED!'
             });
         });
     });
 };
 
-
-
-// initialize application
+// initialize app
 addManager()
     .then(employeeData => {
         return addEmployee(employeeData)
     })
     .then(data => {
         console.log(data);
-        return generatePage(data);
+        return generateCards(data);
     })
     .then(newFile => {
         return createFile(newFile);
@@ -219,4 +215,4 @@ addManager()
     })
     .catch(err => {
         console.log(err);
-    }); 
+    });

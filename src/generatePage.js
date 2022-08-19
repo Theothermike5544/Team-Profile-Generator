@@ -1,66 +1,106 @@
-// create manager card
+// push employee info into array
+const generateCards = data => {
+    cardArray = [];
+
+    // calls functions to respective employee roles
+    for (let i = 0; i < data.length; i++) {
+        let employee = data[i];
+        let role = employee.getRole();
+
+        if (role === 'Manager') {
+            const managerInfo = generateManager(employee);
+            cardArray.push(managerInfo);
+        }
+        if (role === 'Engineer') {
+            const engineerInfo = generateEngineer(employee);
+            cardArray.push(engineerInfo);
+        }
+        if (role === 'Intern') {
+            const internInfo = generateIntern(employee);
+            cardArray.push(internInfo);
+        }
+    }
+
+    // take all employee cards & join strings
+    const employeeInfo = cardArray.join('');
+
+    // Return team data
+    const createTeam = generatePage(employeeInfo);
+    return createTeam;
+};
+
+// create card for "Manager"
 const generateManager = manager => {
     if (!manager) {
         return '';
     }
-    return `<div class="card" style="width: 18rem;">
-                <div class="card-header">
-                    ${manager.name}
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title"><i class="fa-solid fa-mug-hot"></i> ${manager.role}</h5>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">${manager.id}</li>
-                            <li class="list-group-item">${manager.email}</li>
-                            <li class="list-group-item">${manager.officeNumber}</li>
+    return `<div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>${manager.name}</h2>
+                        <h5 class="card-title"><i class="fa-solid fa-mug-hot"></i> ${manager.getRole()}</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">ID: ${manager.id}</li>
+                            <li class="list-group-item">E-mail: <a href="mailto:${manager.email}">${manager.email}</a></li>
+                            <li class="list-group-item">Office Number: ${manager.officeNumber}</li>
                         </ul>
+                    </div>
                 </div>
             </div>
-            `;
+    `;
 };
 
-// create engineer card
+// create card for "Engineer"
 const generateEngineer = engineer => {
     if (!engineer) {
         return '';
     }
-    return `<div class="card" style="width: 18rem;">
-                <div class="card-header">
-                    ${engineer.name}
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title"><i class="fa-solid fa-laptop-code"></i> ${engineer.role}</h5>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">${engineer.id}</li>
-                            <li class="list-group-item">${engineer.email}</li>
-                            <li class="list-group-item">${engineer.github}</li>
+    return `
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>${engineer.name}</h2>
+                        <h5 class="card-title"><i class="fa-solid fa-laptop-code"></i> ${engineer.getRole()}</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">ID: ${engineer.id}</li>
+                            <li class="list-group-item">E-mail: <a href="mailto:${engineer.email}">${engineer.email}</a></li>
+                            <li class="list-group-item">GitHub: <a href="https://github.com/${engineer.github}" target="_blank">${engineer.github}</a></li>
                         </ul>
+                    </div>
                 </div>
             </div>
-            `;
+    `;
 };
-// create intern card
+
+// create card for "Intern"
 const generateIntern = intern => {
     if (!intern) {
         return '';
     }
-    return `<div class="card" style="width: 18rem;">
-                <div class="card-header">
-                    ${intern.name}
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title"><i class="fa-solid fa-graduation-cap"></i> ${intern.role}</h5>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">${intern.id}</li>
-                            <li class="list-group-item">${intern.email}</li>
-                            <li class="list-group-item">${intern.school}</li>
+    return `
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>${intern.name}</h2>
+                        <h5 class="card-title"><i class="fa-solid fa-graduation-cap"></i> ${intern.getRole()}</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">ID: ${intern.id}</li>
+                            <li class="list-group-item">E-mail: <a href="mailto:${intern.email}">${intern.email}</a></li>
+                            <li class="list-group-item">School: ${intern.school}</li>
                         </ul>
+                    </div>
                 </div>
             </div>
-            `;
+    `;
 };
-// create index.html page
 
+// create index.html page
 const generatePage = data => {
     return `<!DOCTYPE html>
 <html lang="en">
@@ -70,30 +110,31 @@ const generatePage = data => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />
     <script src="https://kit.fontawesome.com/c5a64ca061.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@200;300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
     <title>Team Profile</title>
 </head>
 <body>
     
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
     
-                <h1>My Team</h1>
+                <h1 class="display-5">My Team</h1>
             </div>
         </div>
-            <div class="row">
-            <div class="col">
-            
-            ${generateManager(data)}
-            ${generateEngineer(data)}
-            ${generateIntern(data)}
-            </div>
-            </div>
+        <div class="row justify-content-center main">
+            ${data}
+        </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </body>
 </html>
     `;
 };
 
-module.exports = generatePage; 
+module.exports = generateCards; 

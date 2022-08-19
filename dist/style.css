@@ -1,21 +1,53 @@
 * {
     box-sizing: border-box;
 }
-
+    
 body {
-    background-color: #e7e4e4;
-    font-family: 'Nunito', Helvetica, Arial, sans-serif;
+    background-color: #838383;
+    font-family: Helvetica, Arial, sans-serif;
     font-size: 1em;
+    font-weight: 325;
 }
 
+.container-fluid {
+    padding: 0;
+}
+
+.jumbotron {
+    background-color: #d5d5d5;
+}
+    
 h1 {
-    background-color: #853e34;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 36px;
+    font-size: 35px;
     text-align: center;
-    letter-spacing: 1px;
-    color: #eee;
-    border-radius: 4px;
-    margin: 20px 0;
-    padding: 20px;
-} 
+    letter-spacing: 4px;
+    font-weight: 420;
+}
+
+/* employee cards formatting */
+
+.main {
+    width: 75%;
+    margin: 0 auto;
+}
+
+div.card {
+    margin: 10px 0;
+    -webkit-box-shadow: 5px 5px 10px -5px rgba(0,0,0,0.6); 
+    box-shadow: 5px 5px 10px -5px rgba(0,0,0,0.6);
+}
+
+div.card-body {
+    background-color: #d5d5d5;
+}
+
+.card-header h2 {
+    font-size: 30px;
+    font-weight: 420;
+}
+
+h5.card-title {
+    font-size: 20px;
+    color: #707070;
+    margin: 2;
+}
