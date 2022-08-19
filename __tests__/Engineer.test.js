@@ -16,7 +16,6 @@ test('getting information off of github', () => {
     const engineer = new Engineer('Michael', 1, 'Michael@domain.com', 'placeholder');
 
     expect(engineer.github).toEqual(expect.any(String));
-    console.log(engineer.github);
 });
 
 test('creating the role for engineer', () => {
@@ -24,5 +23,4 @@ test('creating the role for engineer', () => {
 
     expect(engineer.getRole()).toBe('Engineer');
 
-    console.log(engineer.getRole());
 });  
