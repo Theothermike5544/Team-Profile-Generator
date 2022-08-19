@@ -1,6 +1,7 @@
 // loading and requiring packages
 const inquirer = require('inquirer');
 const fs = require('fs');
+const generatePage = require('./src/generatePage.js');
 
 // get team profiles
 const Manager = require('./lib/Manager.js');
@@ -69,7 +70,10 @@ Add a Team Manager
         }
     ])
     .then(managerData => {
-        console.log(managerData);
+            // take manager info & push them into teamArray
+            const manager = new Manager (managerData.name, managerData.id, managerData.email, managerData.officeNumber);
+            teamArray.push(manager);
+            console.log(manager);
     })
 };
 
@@ -85,12 +89,13 @@ Add A Team Member
             type: 'list',
             name: 'role',
             message: 'Would you like to add a team member?',
-            choices: ['Add Engineer', 'Add Intern', 'Finish Building Team']
+            choices: ['Engineer', 'Intern', 'Finish Building Team']
         },
         {
             type: 'input',
             name: 'name',
             message: 'What is the name of the employee?',
+            when: (choice) => choice.role !== 'Finish Building Team',
             validate: employeeName => {
                 if (employeeName) {
                     return true;
@@ -103,6 +108,7 @@ Add A Team Member
             type: 'input',
             name: 'id',
             message: "Please enter the employee's ID number.",
+            when: (choice) => choice.role !== 'Finish Building Team',
             validate: employeeId => {
                 if (employeeId) {
                     return true;
@@ -115,6 +121,7 @@ Add A Team Member
             type: 'input',
             name: 'email',
             message: 'Please enter the e-mail address of the employee.',
+            when: (choice) => choice.role !== 'Finish Building Team',
             validate: employeeEmail => {
                 if (employeeEmail) {
                     return true;
@@ -127,7 +134,7 @@ Add A Team Member
             type: 'input',
             name: 'github',
             message: "Please enter the engineer's GitHub username.",
-            when: (choice) => choice.role === 'Add Engineer',
+            when: (choice) => choice.role === 'Engineer',
             validate: githubInput => {
                 if (githubInput) {
                     return true;
@@ -140,7 +147,7 @@ Add A Team Member
             type: 'input',
             name: 'school',
             message: "Please enter the intern's school.",
-            when: (choice) => choice.role === 'Add Intern',
+            when: (choice) => choice.role === 'Intern',
             validate: schoolInput => {
                 if (schoolInput) {
                     return true;
@@ -153,22 +160,63 @@ Add A Team Member
             type: 'confirm',
             name: 'addEmployee',
             message: 'Would you like to add another team member?',
+            when: (choice) => choice.role !== 'Finish Building Team',
             default: false
         }
     ])
     .then(employeeData => {
-        teamArray.push(employeeData);
+        // take engineer info & push them into teamArray
+        if (employeeData.role === 'Engineer') {
+            const engineer = new Engineer (employeeData.name, employeeData.id, employeeData.email, employeeData.github);
+            teamArray.push(engineer);
+        } else if (employeeData.role === 'Intern') {
+            // take intern info & push them into teamArray
+            const intern = new Intern (employeeData.name, employeeData.id, employeeData.email, employeeData.school);
+            teamArray.push(intern);
+        }
+
+        // 'add another team member?' options
         if (employeeData.addEmployee) {
-            return addEmployee();
+            return addEmployee(teamArray);
         } else {
-            console.log(employeeData);
+            return teamArray;
         }
     })
 };
+
+// create index.html file
+const createFile = (fileName, teamArray) => {
+    return new Promise((resolve, reject) => {
+        fs.writeFile('./dist/index.html', fileName, err => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve({
+                ok: true,
+                message: 'Success! A new team profile has been created! Check index.html in the `dist` folder.'
+            });
+        });
+    });
+};
+
 
 
 // initialize application
 addManager()
     .then(employeeData => {
         return addEmployee(employeeData)
+    })
+    then(teamArray => {
+        console.log(teamArray);
+        return generatePage(teamArray);
+    })
+    .then(newFile => {
+        return createFile(newFile);
+    })
+    .then(writeFileResponse => {
+        console.log(writeFileResponse.message);
+    })
+    .catch(err => {
+        console.log(err);
     }); 
